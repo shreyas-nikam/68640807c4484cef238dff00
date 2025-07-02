@@ -1,562 +1,571 @@
 
-# Technical Specifications: Multiple Linear Regression Assumptions Analyzer
+# Technical Specifications for a Streamlit Application: Multiple Linear Regression Assumptions Analyzer
 
 ## Overview
 
-The "Multiple Linear Regression Assumptions Analyzer" is a Streamlit application designed to provide an int\fractive platform for understanding and visualizing the core assumptions underlying multiple linear regression models. By utilizing readily available datasets and int\fractive plotting components, users can explore relationships between variables, examine model residuals, and identify potential violations of critical regression assumptions such as linearity, homoscedasticity, normality of residuals, and absence of multicollinearity. The application aims to enhance learning outcomes related to interpreting residual plots and understanding the \fractical implications of these assumptions in statistical modeling.
+The "Multiple Linear Regression Assumptions Analyzer" is a Streamlit application designed to educate users on the critical assumptions underlying multiple linear regression models and provide int\fractive visualizations to diagnose potential violations of these assumptions. The application will leverage readily available datasets from Python libraries, train a linear regression model, and then generate various diagnostic plots and statistical test results.
+
+#### Learning Outcomes
+-   Users will understand the assumptions underlying a multiple linear regression model.
+-   Users will learn to interpret residual plots and statistical tests to identify potential violations of these assumptions.
 
 ## Step-by-Step Development Process
 
-The development of the Streamlit application will follow these logical steps:
+The development of the "Multiple Linear Regression Assumptions Analyzer" application will follow a structured approach:
 
-1.  **Project Setup and Environment**:
-    *   Create a new Python virtual environment.
-    *   Install necessary libraries: `streamlit`, `pandas`, `numpy`, `statsmodels`, `plotly`, `scikit-learn`.
-    *   Create the main application file, `app.py`.
-
-2.  **Data Loading and Preparation**:
-    *   Implement a function to load a readily available dataset (e.g., `load_diabetes` from `sklearn.datasets`).
-    *   Structure the data into a Pandas DataFrame, clearly defining the dependent variable (target) and independent variables (features).
-    *   Provide options in the Streamlit sidebar for users to select independent variables from the loaded dataset.
-
-3.  **Multiple Linear Regression Model Implementation**:
-    *   Use the `statsmodels.api.OLS` module to build and fit the multiple linear regression model based on the user-selected variables.
-    *   Ex\fract model summary statistics, predicted values, and residuals after fitting the model.
-
-4.  **Core Concepts and Explanatory Content Integration**:
-    *   Embed comprehensive Markdown explanations for each assumption of multiple linear regression.
-    *   Integrate the mathematical formula for multiple linear regression following the specified LaTeX template.
-    *   Provide \fractical examples and real-world context for each assumption and its potential violations.
-
-5.  **Int\fractive Visualization Development**:
-    *   **Scatterplot Matrix**: Generate a scatterplot matrix using `plotly.express.scatter_matrix` to visualize relationships between all selected independent variables and the dependent variable.
-    *   **Residuals vs. Predicted Value Plot**: Create a scatter plot using `plotly.graph_objects.Scatter` to visualize the residuals against the predicted values of the dependent variable. Add a horizontal line at $y=0$ for reference.
-    *   **Regression Residuals vs. Factors Plots**: For each independent variable, generate individual scatter plots of residuals against that factor.
-    *   **Normality Plots**:
-        *   A Histogram of residuals to visually assess their distribution.
-        *   A Q-Q plot (Quantile-Quantile plot) of residuals against a theoretical normal distribution using `statsmodels.api.qqplot`.
-
-6.  **Streamlit User Interface (UI) Construction**:
-    *   Design the sidebar for user inputs (dataset selection, independent variable checkboxes).
-    *   Arrange the main content area to display:
-        *   An introductory overview.
-        *   Explanations of multiple linear regression and its assumptions.
-        *   The int\fractive plots, dynamically updated based on user selections.
-        *   Model summary output from `statsmodels`.
-
-7.  **Int\fractivity and Dynamic Updates**:
-    *   Ensure that changing variable selections in the sidebar dynamically re-runs the regression model and updates all associated plots and model summary.
-    *   Implement clear loading indicators or messages where computations might take a moment.
+1.  **Project Setup**: Initialize a new Python project, create `app.py` as the main Streamlit application file, and define a `requirements.txt` file to manage dependencies.
+2.  **Library Imports**: Import all necessary libraries, including `streamlit`, `pandas`, `numpy`, `sklearn` (for datasets and linear model), `statsmodels` (for statistical tests and diagnostics), `matplotlib.pyplot`, and `seaborn` (for visualizations).
+3.  **Data Loading Module**: Implement a function to load a suitable dataset for multiple linear regression from Python libraries (e.g., `sklearn.datasets.load_boston` or `sklearn.datasets.make_regression`). This function will make the data available for the application.
+4.  **Model Training Module**: Develop a function that takes the loaded dataset, identifies dependent and independent variables, and trains a multiple linear regression model using `sklearn.linear_model.LinearRegression`. This module will also generate predicted values ($\hat{Y}$) and residuals ($e_i$).
+5.  **Assumption Calculation Module**:
+    *   **Residuals & Predicted Values**: Calculate $e_i = Y_i - \hat{Y}_i$ and $\hat{Y}_i$.
+    *   **Multicollinearity**: Implement calculation of Variance Inflation Factor (VIF) for each independent variable using `statsmodels.stats.outliers_influence.variance_inflation_factor`.
+    *   **Normality Test**: Perform Shapiro-Wilk test for normality of residuals using `scipy.stats.shapiro`.
+    *   **Homoscedasticity Test**: Implement Breusch-Pagan test for homoscedasticity using `statsmodels.stats.api.het_breuschpagan`.
+    *   **Autocorrelation Test**: Implement Durbin-Watson test for autocorrelation using `statsmodels.stats.stattools.durbin_watson`.
+6.  **Visualization Module**: Create dedicated functions for generating each required plot:
+    *   **Scatterplot Matrix**: Utilizes `seaborn.pairplot` to visualize relationships between all independent variables and the dependent variable.
+    *   **Residuals vs. Predicted Values Plot**: Uses `matplotlib.pyplot.scatter` to plot residuals against predicted values, adding a horizontal line at $y=0$.
+    *   **Residuals vs. Factors Plots**: Iteratively plots residuals against each independent variable, using `matplotlib.pyplot.scatter`.
+    *   **Q-Q Plot for Normality**: Uses `statsmodels.graphics.gofplots.qqplot` to assess the normality of residuals.
+    *   **Histogram of Residuals**: Uses `matplotlib.pyplot.hist` to visualize the distribution of residuals.
+7.  **Streamlit UI Integration**:
+    *   **Sidebar**: Use `st.sidebar` for dataset selection and potentially other int\fractive controls.
+    *   **Main Content Area**: Structure the main page using `st.title`, `st.header`, `st.subheader`, and `st.markdown` for textual explanations. Display dataframes with `st.dataframe` and plots with `st.pyplot` or `st.plotly_chart`.
+    *   **Caching**: Employ `@st.cache_data` decorator for functions that perform data loading, model training, and complex calculations to optimize application performance.
 
 ## Core Concepts and Mathematical Foundations
 
+This section details the fundamental concepts of multiple linear regression and its underlying assumptions, along with their mathematical representations and \fractical applications, following the specified LaTeX formatting.
+
 ### Multiple Linear Regression Model
-Multiple linear regression is a statistical technique used to model the relationship between a dependent variable and two or more independent variables by fitting a linear equation to observed data. It aims to predict the value of a dependent variable based on the values of several independent variables.
-
-The multiple linear regression model is represented as:
+The multiple linear regression model describes the linear relationship between a dependent variable and two or more independent variables. It is used to predict the value of the dependent variable based on the values of the independent variables. The model is represented as:
 $$
-Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_p X_p + \epsilon
+Y = \eta_0 + \eta_1 X_1 + \eta_2 X_2 + \ldots + \eta_p X_p + \epsilon
 $$
 Where:
-- $Y$: The dependent variable (the variable being predicted or explained)
-- $\beta_0$: The Y-intercept, representing the expected value of $Y$ when all independent variables ($X_i$) are zero
-- $\beta_i$: The regression coefficient for the $i$-th independent variable, $X_i$, representing the change in $Y$ for a one-unit increase in $X_i$, holding all other independent variables constant
-- $X_i$: The $i$-th independent variable (predictor or explanatory variable)
-- $p$: The number of independent variables
-- $\epsilon$: The error term (or residual), representing the portion of $Y$ that is not explained by the linear relationship with the $X$ variables. It accounts for all other factors influencing $Y$ that are not included in the model.
+-   $Y$: The dependent variable (the outcome we are trying to predict)
+-   $X_1, X_2, \ldots, X_p$: The independent variables (predictors or factors)
+-   $\eta_0$: The Y-intercept (the value of Y when all X variables are zero)
+-   $\eta_1, \eta_2, \ldots, \eta_p$: The regression coefficients, representing the change in Y for a one-unit change in the corresponding X, holding other X variables constant
+-   $\epsilon$: The error term (or residual), representing the unobserved factors that influence Y
 
-This formula establishes a linear relationship between the dependent variable and a set of independent variables, seeking to minimize the sum of squared differences between observed and predicted values. It is widely used for prediction and to understand the strength and direction of relationships between variables in various fields, from economics to healthcare.
+This formula defines how the dependent variable is linearly related to the independent variables, with an added error term to account for variability not explained by the model. Its \fractical application lies in forecasting, understanding relationships between variables, and identifying the strength and direction of these relationships.
 
-### Assumptions Underlying Multiple Linear Regression
+### Assumptions of Multiple Linear Regression
 
-For the coefficients in a multiple linear regression model to be reliable and for hypothesis tests (like t-tests and F-tests) to be valid, several assumptions about the data and the error term must be met. The application will help users visualize potential violations of these.
+For the coefficients of a multiple linear regression model to be Best Linear Unbiased Estimators (BLUE), several assumptions about the data and the error term must hold. Violations of these assumptions can lead to biased or inefficient estimates and unreliable inferences.
 
-#### Linearity
-The relationship between the independent variables ($X_i$) and the dependent variable ($Y$) is calculated using:
+#### 1. Linearity
+The relationship between the independent variables and the dependent variable is linear. This means that the expected value of the dependent variable is a straight-line function of the independent variables.
 $$
-Y = \beta_0 + \beta_1 X_1 + \ldots + \beta_p X_p + \epsilon
-$$
-Where:
-- $Y$: Dependent variable
-- $\beta_i$: Regression coefficients
-- $X_i$: Independent variables
-- $\epsilon$: Error term
-
-This formula assumes that the mean of the dependent variable is a linear combination of the independent variables. If the relationship is non-linear, the model will not accurately capture the true relationship, leading to biased coefficients and inaccurate predictions.
-**\fractical Application**: This assumption is crucial because linear regression models, by their nature, are designed to fit straight lines or hyperplanes. Violations often manifest as curved patterns in residual plots (e.g., "U" shape or inverted "U" shape). The Scatterplot Matrix helps visually inspect initial linear relationships, while the Residuals vs. Predicted Value plot is critical for detecting non-linearity; a random scatter around $0$ suggests linearity, while a discernible pattern indicates a violation.
-
-#### Independence of Residuals
-The error terms ($\epsilon$) for different observations are assumed to be independent. Mathematically, for any two distinct observations $i$ and $j$:
-$$
-Cov(\epsilon_i, \epsilon_j) = 0 \quad \text{for } i \neq j
+E(\epsilon_i | X_{i1}, \ldots, X_{ip}) = 0
 $$
 Where:
-- $Cov(\epsilon_i, \epsilon_j)$: Covariance between the error terms of observation $i$ and observation $j$
+-   $E(\epsilon_i | X_{i1}, \ldots, X_{ip})$: The expected value of the error term for observation $i$, conditional on the independent variables.
 
-This equation states that the errors associated with one observation do not influence the errors of another observation. Violations, known as autocorrelation (or serial correlation), commonly occur in time-series data where errors from one period are correlated with errors from previous periods.
-**\fractical Application**: Independence of residuals is vital because dependent errors can lead to underestimated standard errors, inflated t-statistics, and misleading p-values, making coefficients appear more significant than they are. The Residuals vs. Factors plots are useful for detecting patterns that might suggest dependencies, especially if the independent variables are time-ordered. A common visual cue for autocorrelation is a "snake-like" or cyclical pattern in residual plots when the independent variable is time or an ordered sequence.
+This assumption implies that the model correctly captures the functional form of the relationship. A common way to diagnose this is by examining the **Residuals vs. Predicted Values Plot** and **Residuals vs. Independent Variables Plots** for any non-linear patterns (e.g., U-shape, inverted U-shape, or other curves). A random scatter of points around the zero line indicates linearity.
 
-#### Homoscedasticity
-The variance of the error terms ($\epsilon$) is constant across all levels of the independent variables. This is expressed as:
+#### 2. Independence of Residuals (No Autocorrelation)
+The residuals (error terms) are independent of each other. This means that the error for one observation does not influence the error for any other observation. This is particularly important in time-series data where consecutive observations might be correlated.
+This assumption ensures that the observations provide independent information. It is commonly assessed using the **Durbin-Watson test statistic** and by examining the **Residuals vs. Predicted Values Plot** for any discernible patterns or trends (e.g., consecutive positive or negative residuals). A Durbin-Watson statistic near 2 suggests no autocorrelation.
+
+#### 3. Homoscedasticity (Constant Variance of Residuals)
+The variance of the residuals is constant across all levels of the independent variables. In other words, the spread of the residuals should be uniform across the range of predicted values and independent variables.
 $$
-Var(\epsilon) = \sigma^2
-$$
-Where:
-- $Var(\epsilon)$: Variance of the error term
-- $\sigma^2$: A constant variance
-
-This formula implies that the spread of residuals should be roughly the same across the range of predicted values and independent variables. If the variance of the errors is not constant, it is called heteroscedasticity.
-**\fractical Application**: Homoscedasticity ensures that the model's predictions are equally precise across the range of data. Heteroscedasticity leads to inefficient (though still unbiased) coefficient estimates and incorrect standard errors, making confidence intervals and hypothesis tests unreliable. The **Residuals vs. Predicted Value** plot is the primary tool for checking this assumption. A fan-like shape (widening or narrowing spread of residuals) or a cone shape indicates heteroscedasticity, whereas a uniform band of residuals around zero suggests homoscedasticity.
-
-#### Normality of Residuals
-The error terms ($\epsilon$) are normally distributed. This is formally stated as:
-$$
-\epsilon \sim N(0, \sigma^2)
+Var(\epsilon_i | X_{i1}, \ldots, X_{ip}) = \sigma^2
 $$
 Where:
-- $\epsilon$: Error term
-- $N(0, \sigma^2)$: Normal distribution with a mean of $0$ and a constant variance $\sigma^2$
+-   $Var(\epsilon_i | X_{i1}, \ldots, X_{ip})$: The variance of the error term for observation $i$, conditional on the independent variables.
+-   $\sigma^2$: A constant variance.
 
-This statement means that the errors should follow a bell-shaped curve, centered at zero. While violations of this assumption primarily impact the reliability of hypothesis tests and confidence intervals for small sample sizes, larger sample sizes often make the central limit theorem applicable, mitigating this issue.
-**\fractical Application**: Normality of residuals is important for the validity of statistical inference (e.g., calculating p-values and confidence intervals). Departures from normality, such as skewness or heavy tails, can be identified using a **Histogram of Residuals** (which should approximate a bell curve) and a **Q-Q plot**. In a Q-Q plot, residuals should roughly follow a straight line if they are normally distributed; deviations from this line indicate non-normality.
+This assumption ensures that the precision of the predictions is consistent across the data. Violation, known as heteroscedasticity, often appears as a "fan" or "cone" shape in the **Residuals vs. Predicted Values Plot**, where the spread of residuals increases or decreases with predicted values. The **Breusch-Pagan test** can formally test for homoscedasticity.
 
-#### No Multicollinearity
-The independent variables ($X_i$) are not highly correlated with each other. This implies that none of the independent variables can be perfectly predicted from a linear combination of the others. Mathematically, it means the design matrix $X$ has full column rank.
+#### 4. Normality of Residuals
+The residuals are normally distributed. This assumption is crucial for hypothesis testing and confidence interval estimation, especially with smaller sample sizes.
+This assumption states that the random errors follow a normal distribution, allowing for valid statistical inferences. It is typically assessed visually using a **Histogram of Residuals** (checking for a bell-shaped curve) and a **Normal Q-Q Plot** (checking if points fall along a straight diagonal line). The **Shapiro-Wilk test** provides a formal statistical test for normality.
+
+#### 5. No Multicollinearity
+The independent variables are not highly correlated with each other. High correlation among independent variables (multicollinearity) makes it difficult to ascertain the individual effect of each independent variable on the dependent variable, leading to unstable and less reliable regression coefficients.
+This assumption ensures that each independent variable provides unique information to the model. It is diagnosed by examining the **Scatterplot Matrix** (looking for strong linear relationships between independent variables) and, more formally, by calculating the **Variance Inflation Factor (VIF)** for each independent variable.
+The Variance Inflation Factor ($VIF_j$) for an independent variable $X_j$ is calculated using:
 $$
-Rank(X) = p+1
+VIF_j = \\frac{1}{1 - R_j^2}
 $$
 Where:
-- $X$: The design matrix of independent variables (including a column of ones for the intercept)
-- $p$: The number of independent variables
+-   $R_j^2$: The coefficient of determination obtained from regressing the independent variable $X_j$ on all other independent variables in the model.
 
-This condition states that the independent variables must not be perfectly linearly related. High correlation between independent variables, known as multicollinearity, makes it difficult to ascertain the individual effect of each independent variable on the dependent variable.
-**\fractical Application**: Multicollinearity makes it challenging to interpret individual regression coefficients because their estimates become unstable and highly sensitive to small changes in the data. While not directly visualized by residual plots, the **Scatterplot Matrix** is crucial for initial detection by showing strong correlations between independent variables. Variance Inflation Factor (VIF) scores (often part of `statsmodels` output or calculated separately) are a quantitative measure to detect severe multicollinearity.
+A high VIF value (typically above 5 or 10) indicates significant multicollinearity, suggesting that the independent variable $X_j$ is highly correlated with other independent variables. This formula quantifies the extent to which the variance of an estimated regression coefficient is inflated due to multicollinearity, helping to identify problematic predictors.
+
+### Coefficient of Determination ($R^2$)
+The coefficient of determination, denoted as $R^2$, measures the proportion of the variance in the dependent variable that is predictable from the independent variables. It provides an indication of how well the regression model fits the observed data.
+$$
+R^2 = 1 - \\frac{SS_{res}}{SS_{tot}}
+$$
+Where:
+-   $SS_{res}$: The sum of squares of residuals, representing the unexplained variance (sum of squared differences between actual $Y_i$ and predicted $\hat{Y}_i$).
+-   $SS_{tot}$: The total sum of squares, representing the total variance in the dependent variable (sum of squared differences between actual $Y_i$ and the mean of $Y$).
+
+This formula quantifies the goodness of fit of the model. An $R^2$ value closer to 1 indicates that a larger proportion of the variance in the dependent variable is explained by the model, implying a better fit. Its \fractical application is to evaluate the explanatory power of the regression model.
 
 ## Required Libraries and Dependencies
 
-The application relies on the following Python libraries for data handling, statistical modeling, and int\fractive visualization:
+The application will rely on the following Python libraries for data handling, model building, statistical analysis, and visualization:
 
-*   **`streamlit`**: Version `1.33.0` (or compatible latest stable version).
-    *   **Role**: Used for building the int\fractive web application interface.
-    *   **Specific Functions/Modules**: `st.sidebar`, `st.columns`, `st.header`, `st.subheader`, `st.write`, `st.dataframe`, `st.plotly_chart`, `st.checkbox`, `st.markdown`, `st.expander`.
-    *   **Import Example**: `import streamlit as st`
-
-*   **`pandas`**: Version `2.2.2` (or compatible latest stable version).
-    *   **Role**: Fundamental for data manipulation and analysis, primarily for handling datasets as DataFrames.
-    *   **Specific Functions/Modules**: `pd.DataFrame`, `pd.read_csv` (if using local files, though `sklearn.datasets` is preferred here).
-    *   **Import Example**: `import pandas as pd`
-
-*   **`numpy`**: Version `1.26.4` (or compatible latest stable version).
-    *   **Role**: Provides numerical operations, especially useful for array manipulations and mathematical functions.
-    *   **Specific Functions/Modules**: `np.array`, `np.mean`.
-    *   **Import Example**: `import numpy as np`
-
-*   **`statsmodels`**: Version `0.14.2` (or compatible latest stable version).
-    *   **Role**: Crucial for statistical modeling, particularly for Ordinary Least Squares (OLS) regression and statistical tests/diagnostics.
-    *   **Specific Functions/Modules**: `statsmodels.api.OLS` for regression, `statsmodels.api.add_constant` to add an intercept term, `statsmodels.graphics.gofplots.qqplot` for Q-Q plots.
-    *   **Import Example**: `import statsmodels.api as sm`
-
-*   **`plotly`**: Version `5.21.0` (or compatible latest stable version).
-    *   **Role**: Used for generating int\fractive and publication-quality visualizations, essential for the scatterplot matrix and residual plots.
-    *   **Specific Functions/Modules**: `plotly.express.scatter_matrix` for high-level multi-panel plots, `plotly.graph_objects.Figure` and `plotly.graph_objects.Scatter` for custom scatter plots, `plotly.subplots.make_subplots` for arranging multiple plots.
-    *   **Import Example**: `import plotly.express as px`, `import plotly.graph_objects as go`
-
-*   **`scikit-learn`**: Version `1.4.2` (or compatible latest stable version).
-    *   **Role**: Provides access to various datasets and potentially some preprocessing utilities if needed.
-    *   **Specific Functions/Modules**: `sklearn.datasets.load_diabetes` for loading a sample dataset.
-    *   **Import Example**: `from sklearn.datasets import load_diabetes`
+-   **`streamlit`**: Version 1.32.2 (or compatible)
+    *   **Specific functions/modules used**: `st.title`, `st.header`, `st.subheader`, `st.markdown`, `st.write`, `st.dataframe`, `st.pyplot`, `st.plotly_chart`, `st.sidebar`, `st.selectbox`, `st.slider`, `st.expander`, `st.cache_data`.
+    *   **Role**: Core framework for building the int\fractive web application, managing UI components, and handling user input.
+-   **`pandas`**: Version 2.2.1 (or compatible)
+    *   **Specific functions/modules used**: `pd.DataFrame`, `pd.concat`, `pd.set_option`.
+    *   **Role**: Efficient data manipulation, loading datasets into DataFrames, and preparing data for modeling and visualization.
+-   **`numpy`**: Version 1.26.4 (or compatible)
+    *   **Specific functions/modules used**: `np.array`, `np.sqrt`, `np.mean`.
+    *   **Role**: Fundamental package for numerical operations, array manipulation, and mathematical calculations within the application.
+-   **`scikit-learn` (sklearn)**: Version 1.4.1.post1 (or compatible)
+    *   **Specific functions/modules used**:
+        *   `sklearn.linear_model.LinearRegression`: For creating and fitting the linear regression model.
+        *   `sklearn.datasets.load_boston` (if available and suitable, or consider `load_diabetes`, `load_wine`, `fetch_california_housing`): For loading readily available datasets.
+        *   `sklearn.model_selection.train_test_split`: Although not explicitly requested for model evaluation, it might be implicitly used for robust training.
+    *   **Role**: Provides the linear regression model implementation and access to example datasets for demonstration.
+-   **`statsmodels`**: Version 0.14.1 (or compatible)
+    *   **Specific functions/modules used**:
+        *   `statsmodels.api.OLS`: For Ordinary Least Squares regression to get a detailed model summary (including p-values, R-squared, etc.).
+        *   `statsmodels.stats.outliers_influence.variance_inflation_factor`: For calculating VIF to diagnose multicollinearity.
+        *   `statsmodels.graphics.gofplots.qqplot`: For generating Q-Q plots for normality assessment.
+        *   `statsmodels.stats.stattools.durbin_watson`: For Durbin-Watson test of autocorrelation.
+        *   `statsmodels.stats.api.het_breuschpagan`: For Breusch-Pagan test of heteroscedasticity.
+    *   **Role**: Essential for in-depth statistical analysis, hypothesis testing, and specific diagnostic tests for regression assumptions.
+-   **`matplotlib.pyplot`**: Version 3.8.3 (or compatible)
+    *   **Specific functions/modules used**: `plt.figure`, `plt.scatter`, `plt.axhline`, `plt.hist`, `plt.title`, `plt.xlabel`, `plt.ylabel`, `plt.tight_layout`, `plt.show`.
+    *   **Role**: Primary library for creating static plots (Residuals vs. Predicted, Residuals vs. Factors, Histograms).
+-   **`seaborn`**: Version 0.13.2 (or compatible)
+    *   **Specific functions/modules used**: `sns.pairplot`.
+    *   **Role**: Used for generating high-level statistical graphics, specifically the scatterplot matrix, which is crucial for visualizing relationships between variables and initial multicollinearity checks.
+-   **`scipy`**: Version 1.12.0 (or compatible)
+    *   **Specific functions/modules used**: `scipy.stats.shapiro`.
+    *   **Role**: Provides statistical functions, including the Shapiro-Wilk test for normality.
 
 ## Implementation Details
 
-### Application Structure (`app.py`)
+The application's internal structure will be modular, with clear separation of concerns for data handling, model training, assumption testing, and visualization.
 
-```python
-import streamlit as st
-import pandas as pd
-import numpy as np
-import statsmodels.api as sm
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-from sklearn.datasets import load_diabetes # Example dataset
+### Data Handling (`data_loader.py` or integrated into `app.py`)
+-   **`load_sample_data(dataset_name)` function**:
+    *   Takes `dataset_name` (e.g., "Boston", "Diabetes", "Synthetic") as input.
+    *   For "Boston" (if applicable): Load using `load_boston()`, create Pandas DataFrame, assign feature names and target.
+    *   For "Diabetes" or "Wine": Load using respective `load_diabetes()` or `load_wine()`, similar DataFrame creation.
+    *   For "Synthetic": Use `sklearn.datasets.make_regression` to generate a custom dataset with controllable number of features, samples, and noise, ensuring a clear linear relationship by default.
+    *   Returns the DataFrame containing both independent and dependent variables.
 
-# --- Configuration ---
-st.set_page_config(layout="wide", page_title="Multiple Linear Regression Assumptions Analyzer")
+### Model Analysis (`model_analyzer.py` or integrated)
+-   **`train_and_predict(df, target_column)` function**:
+    *   Splits `df` into features (X) and target (Y) based on `target_column`.
+    *   Initializes `sklearn.linear_model.LinearRegression`.
+    *   Fits the model to the data.
+    *   Calculates predicted values ($\hat{Y}$) and residuals ($e = Y - \hat{Y}$).
+    *   Returns the fitted model, predicted values, residuals, and feature names.
+-   **`get_ols_summary(X, Y)` function**:
+    *   Uses `statsmodels.api.OLS` to fit the model and generate a comprehensive statistical summary, including coefficients, R-squared, p-values, etc. This is preferred for displaying statistical details to the user over `sklearn`'s summary.
+    *   Returns the `statsmodels` OLS results object.
+-   **`perform_assumption_tests(X, residuals)` function**:
+    *   **VIF Calculation**: Iterates through each feature in `X` to calculate its VIF using `variance_inflation_factor` (requires adding a constant to X for `statsmodels.OLS` if not already done).
+    *   **Shapiro-Wilk Test**: Applies `shapiro` to the `residuals`. Returns W-statistic and p-value.
+    *   **Breusch-Pagan Test**: Applies `het_breuschpagan` to `residuals` and `X`. Returns test statistics and p-values.
+    *   **Durbin-Watson Test**: Applies `durbin_watson` to `residuals`. Returns the Durbin-Watson statistic.
+    *   Returns a dictionary or object containing all test results.
 
-# --- Data Loading ---
-@st.cache_data # Cache data to avoid reloading on every rerun
-def get_diabetes_data():
-    diabetes = load_diabetes(as_frame=True)
-    df = diabetes.frame
-    df.columns = [col.replace(' ', '_') for col in df.columns] # Clean column names
-    return df, diabetes.feature_names, diabetes.target_name
-
-df, feature_names, target_name = get_diabetes_data()
-
-# --- Streamlit UI Layout ---
-st.title("Multiple Linear Regression Assumptions Analyzer")
-
-st.markdown("""
-This application allows you to explore the assumptions underlying multiple linear regression models
-using int\fractive visualizations. Select independent variables to build a model and
-examine the diagnostics plots.
-""")
-
-st.sidebar.header("Configuration")
-st.sidebar.markdown("---")
-
-# Dependent Variable selection (fixed for this example)
-st.sidebar.subheader("Dependent Variable")
-st.sidebar.write(f"**{target_name.replace('_', ' ').title()}** (fixed for demonstration)")
-
-# Independent Variables selection
-st.sidebar.subheader("Select Independent Variables")
-selected_features = []
-default_selected = feature_names[:3] # Select first 3 features by default
-
-for feature in feature_names:
-    if st.sidebar.checkbox(feature.replace('_', ' ').title(), value=feature in default_selected):
-        selected_features.append(feature)
-
-st.sidebar.markdown("---")
-
-# Display selected data and run regression only if features are selected
-if not selected_features:
-    st.warning("Please select at least one independent variable.")
-else:
-    # Prepare data for statsmodels
-    X = df[selected_features]
-    y = df[target_name]
-    X = sm.add_constant(X) # Add an intercept term
-
-    # --- Model Training ---
-    try:
-        model = sm.OLS(y, X).fit()
-        predictions = model.predict(X)
-        residuals = model.resid
-
-        st.subheader("1. Regression Model Summary")
-        st.code(model.summary().as_text()) # Display model summary
-
-        # --- Explanations and Visualizations ---
-        st.markdown("---")
-        st.header("Core Concepts and Assumptions Analysis")
-
-        # Linearity and Multicollinearity (initial check)
-        st.subheader("2. Linearity and Multicollinearity Visual Check: Scatterplot Matrix")
-        st.markdown("""
-        The **linearity** assumption states that the relationship between independent variables and the
-        dependent variable is linear. The **no multicollinearity** assumption requires that independent variables
-        are not highly correlated with each other. A scatterplot matrix helps visualize pairwise relationships.
-        """)
-        
-        # Combine dependent and independent variables for scatter_matrix
-        plot_vars = [target_name] + selected_features
-        fig_scatter_matrix = px.scatter_matrix(df, dimensions=plot_vars)
-        st.plotly_chart(fig_scatter_matrix, use_container_width=True)
-        st.markdown("""
-        *   **Linearity**: Look for linear patterns in the scatter plots between independent variables and the dependent variable.
-            Curved patterns suggest non-linearity.
-        *   **Multicollinearity**: Observe the scatter plots between independent variables. Strong linear relationships
-            (e.g., highly clustered points forming a line) indicate potential multicollinearity.
-        """)
-
-        # Homoscedasticity and Linearity (further check)
-        st.subheader("3. Homoscedasticity and Linearity Check: Residuals vs. Predicted Values")
-        st.markdown("""
-        The **homoscedasticity** assumption states that the variance of the error terms is constant across all
-        levels of the independent variables. Violations (heteroscedasticity) often appear as a fan-like shape in this plot.
-        This plot also helps confirm **linearity**; a random scatter around zero indicates linearity.
-        """)
-        fig_homo = go.Figure()
-        fig_homo.add_\frace(go.Scatter(x=predictions, y=residuals, mode='markers', name='Residuals'))
-        fig_homo.add_hline(y=0, line_dash="dash", line_color="red")
-        fig_homo.update_layout(title="Residuals vs. Predicted Values",
-                               xaxis_title=f"Predicted {target_name.replace('_', ' ').title()}",
-                               yaxis_title="Residuals")
-        st.plotly_chart(fig_homo, use_container_width=True)
-        st.markdown("""
-        *   **Homoscedasticity**: Look for a random scatter of points around the red line ($y=0$). If the spread of
-            residuals widens or narrows as predicted values increase (a "fan" or "cone" shape),
-            it suggests heteroscedasticity.
-        *   **Linearity**: Any clear pattern (e.g., U-shape, S-shape) in the residuals indicates a violation of linearity.
-            Ideally, residuals should be randomly scattered.
-        """)
-
-        # Independence of Residuals
-        st.subheader("4. Independence of Residuals Check: Residuals vs. Independent Variables")
-        st.markdown("""
-        The **independence of residuals** assumption states that the error terms for different observations are
-        uncorrelated. This is especially important for time-series data. Patterns in these plots might suggest
-        autocorrelation or other uncaptured relationships.
-        """)
-        
-        # Create subplots for residuals vs. each independent variable
-        num_cols = 3 # Number of columns for subplot grid
-        rows = (len(selected_features) + num_cols - 1) // num_cols
-        fig_indep = make_subplots(rows=rows, cols=num_cols,
-                                 subplot_titles=[f"Residuals vs. {feat.replace('_', ' ').title()}" for feat in selected_features])
-        
-        for i, feature in enumerate(selected_features):
-            row = (i // num_cols) + 1
-            col = (i % num_cols) + 1
-            fig_indep.add_\frace(go.Scatter(x=df[feature], y=residuals, mode='markers', name=feature.replace('_', ' ').title()),
-                                row=row, col=col)
-            fig_indep.add_hline(y=0, line_dash="dash", line_color="red", row=row, col=col)
-            
-        fig_indep.update_layout(height=400*rows, showlegend=False)
-        st.plotly_chart(fig_indep, use_container_width=True)
-        st.markdown("""
-        *   **Independence**: For each plot, ideally, residuals should be randomly scattered around the red line.
-            Any discernible pattern (e.g., cyclical, trending) might indicate a lack of independence or that the
-            independent variable has a non-linear relationship not captured by the model.
-        """)
-
-        # Normality of Residuals
-        st.subheader("5. Normality of Residuals Check: Histogram and Q-Q Plot")
-        st.markdown("""
-        The **normality of residuals** assumption states that the error terms are normally distributed.
-        This is important for the validity of statistical inference, especially with smaller sample sizes.
-        """)
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("##### Histogram of Residuals")
-            fig_hist = px.histogram(residuals, nbins=30, title="Distribution of Residuals")
-            fig_hist.update_layout(xaxis_title="Residuals", yaxis_title="Frequency")
-            st.plotly_chart(fig_hist, use_container_width=True)
-            st.markdown("""
-            *   **Histogram**: Look for a bell-shaped distribution, centered around zero. Skewness or
-                multiple peaks can indicate non-normality.
-            """)
-        
-        with col2:
-            st.markdown("##### Q-Q Plot of Residuals")
-            fig_qq = sm.qqplot(residuals, line='s', fit=True)
-            # Convert matplotlib figure to Plotly
-            plotly_qq = go.Figure(data=fig_qq.data, layout=fig_qq.layout)
-            plotly_qq.update_layout(title="Q-Q Plot of Residuals",
-                                    xaxis_title="Theoretical Quantiles",
-                                    yaxis_title="Sample Quantiles")
-            st.plotly_chart(plotly_qq, use_container_width=True)
-            st.markdown("""
-            *   **Q-Q Plot**: Points should closely follow the straight line. Deviations from the line,
-                especially at the tails, suggest departures from normality.
-            """)
-
-    except Exception as e:
-        st.error(f"An error occurred during model fitting or plotting: {e}")
-        st.warning("Please check your selected variables. Some combinations may cause issues (e.g., perfect multicollinearity).")
-
-### Data Processing and Model Logic
-*   **Data Loading**: The `get_diabetes_data()` function uses `sklearn.datasets.load_diabetes(as_frame=True)` to directly load the dataset into a Pandas DataFrame. Column names are cleaned for better display. Using `@st.cache_data` ensures efficient re-execution.
-*   **Model Specification**:
-    *   The selected independent variables (`selected_features`) form the `X` matrix.
-    *   `sm.add_constant(X)` is used to explicitly add an intercept column to the independent variables, as `statsmodels` OLS does not add it by default.
-    *   The dependent variable `y` is set to the `target_name` column.
-*   **Model Fitting**: `sm.OLS(y, X).fit()` fits the Ordinary Least Squares regression model.
-*   **Results Ex\fraction**:
-    *   `model.summary()` provides a comprehensive statistical summary, including coefficients, R-squared, p-values, and various diagnostic statistics. `as_text()` converts it to a string for display.
-    *   `model.predict(X)` calculates the predicted values ($\hat{Y}$) for the given `X`.
-    *   `model.resid` calculates the residuals ($e = Y - \hat{Y}$).
-
-### Visualization Logic
-*   **Scatterplot Matrix**: `plotly.express.scatter_matrix(df, dimensions=plot_vars)` generates a grid of scatter plots for all pairwise combinations of the specified variables (`plot_vars`). This is a powerful tool for initial visual inspection of relationships and potential multicollinearity.
-*   **Residuals vs. Predicted Values**:
-    *   A `go.Figure()` is initialized.
-    *   `go.Scatter(x=predictions, y=residuals, mode='markers')` creates the scatter plot.
-    *   `fig_homo.add_hline(y=0, ...)` adds a horizontal reference line at zero, crucial for interpreting residuals.
-*   **Residuals vs. Factors Plots**:
-    *   `make_subplots` is used to create a grid of plots, one for each selected independent variable.
-    *   Each subplot contains a scatter \frace of the respective independent variable against the residuals, along with a zero-reference line.
-*   **Normality Plots**:
-    *   **Histogram**: `px.histogram(residuals, ...)` generates a histogram to show the distribution of the residuals.
-    *   **Q-Q Plot**: `sm.qqplot(residuals, line='s', fit=True)` generates a Q-Q plot using `statsmodels`. The `line='s'` argument adds a standardized line to compare against. The `fit=True` argument estimates mean and standard deviation from the data. The matplotlib figure generated by `sm.qqplot` is then converted to a Plotly figure object for compatibility with `st.plotly_chart`.
+### Visualization (`plot_generator.py` or integrated)
+-   **`plot_scatterplot_matrix(df, target_column)` function**:
+    *   Takes the full DataFrame and target column name.
+    *   Uses `seaborn.pairplot` to generate the matrix.
+    *   Configures `pairplot` to show scatterplots for variable pairs and histograms/KDEs for single variables.
+    *   Returns the `matplotlib` figure.
+-   **`plot_residuals_vs_predicted(residuals, predicted_values)` function**:
+    *   Creates a `matplotlib` figure and axes.
+    *   Plots `residuals` against `predicted_values` using `plt.scatter`.
+    *   Adds a horizontal line at $y=0$ for reference.
+    *   Labels axes and sets title.
+    *   Returns the `matplotlib` figure.
+-   **`plot_residuals_vs_factors(X, residuals, feature_names)` function**:
+    *   Generates individual plots of residuals against each independent variable.
+    *   Creates a grid of subplots if there are many features.
+    *   Labels axes and sets titles for each subplot.
+    *   Returns the `matplotlib` figure.
+-   **`plot_qq_plot(residuals)` function**:
+    *   Uses `statsmodels.graphics.gofplots.qqplot` with `fit=True` to generate the Q-Q plot.
+    *   Adds a reference line (e.g., 45-degree line).
+    *   Labels axes and sets title.
+    *   Returns the `matplotlib` figure.
+-   **`plot_residuals_histogram(residuals)` function**:
+    *   Creates a `matplotlib` figure and axes.
+    *   Plots a histogram of `residuals` using `plt.hist`.
+    *   Adds a normal distribution curve overlay for comparison (optional, but good for visual aid).
+    *   Labels axes and sets title.
+    *   Returns the `matplotlib` figure.
 
 ## User Interface Components
 
-The application's user interface will be composed of the following key components:
+The Streamlit application will present an intuitive and int\fractive interface to guide users through the multiple linear regression assumption analysis.
 
-1.  **Main Title and Overview**:
-    *   `st.title("Multiple Linear Regression Assumptions Analyzer")`: Prominent title at the top.
-    *   `st.markdown(...)`: A brief introductory paragraph explaining the application's purpose and how to use it.
+### Sidebar (`st.sidebar`)
+-   **Application Title**: "Multiple Linear Regression Assumptions Analyzer".
+-   **Dataset Selection**: A `st.sidebar.selectbox` allowing users to choose from predefined datasets (e.g., "Boston Housing (Sample)", "Synthetic Regression Data").
+-   **Synthetic Data Controls (if applicable)**: If "Synthetic Regression Data" is selected, provide `st.sidebar.slider` widgets for:
+    *   Number of samples.
+    *   Number of features.
+    *   Noise level.
+-   **Variable Selection (Optional but Recommended)**: For selected datasets, `st.sidebar.selectbox` for choosing the dependent variable and `st.sidebar.multiselect` for selecting independent variables. This allows custom model building.
 
-2.  **Sidebar (`st.sidebar`)**:
-    *   **Configuration Header**: `st.sidebar.header("Configuration")`
-    *   **Dependent Variable Display**: `st.sidebar.subheader("Dependent Variable")` and `st.sidebar.write()` to inform the user which variable is the dependent one (fixed in this demonstration).
-    *   **Independent Variable Selection**:
-        *   `st.sidebar.subheader("Select Independent Variables")`
-        *   Multiple `st.sidebar.checkbox()` widgets, one for each available independent variable in the dataset. Users can select/deselect variables to include in the regression model. Default variables are pre-selected for convenience.
-    *   **Separators**: `st.sidebar.markdown("---")` for visual separation.
+### Main Content Area
+-   **Overview and Learning Outcomes**:
+    *   `st.title("Multiple Linear Regression Assumptions Analyzer")`
+    *   `st.markdown("This application helps explore and diagnose assumptions of multiple linear regression.")`
+    *   `st.subheader("Learning Outcomes:")`
+    *   `st.markdown("- **Assumptions underlying multiple linear regression**")`
+    *   `st.markdown("- **Explain the assumptions underlying a multiple linear regression model and interpret residual plots indicating potential violations of these assumptions**")`
 
-3.  **Main Content Area**:
-    *   **Regression Model Summary**:
-        *   `st.subheader("1. Regression Model Summary")`
-        *   `st.code(model.summary().as_text())`: Displays the detailed statistical output from the `statsmodels` OLS regression, including coefficients, p-values, R-squared, and other diagnostic metrics.
-    *   **Core Concepts and Assumptions Analysis Header**: `st.header("Core Concepts and Assumptions Analysis")` to structure the diagnostic sections.
-    *   **Individual Assumption Sections (Subheaders, Explanations, and Plots)**:
-        *   **Linearity and Multicollinearity (Scatterplot Matrix)**:
-            *   `st.subheader("2. Linearity and Multicollinearity Visual Check: Scatterplot Matrix")`
-            *   `st.markdown(...)`: Explanations of linearity and multicollinearity, and how the scatterplot matrix helps in their visual assessment.
-            *   `st.plotly_chart(fig_scatter_matrix, use_container_width=True)`: Displays the int\fractive scatterplot matrix.
-        *   **Homoscedasticity and Linearity (Residuals vs. Predicted Values)**:
-            *   `st.subheader("3. Homoscedasticity and Linearity Check: Residuals vs. Predicted Values")`
-            *   `st.markdown(...)`: Explanations of homoscedasticity and further linearity checks.
-            *   `st.plotly_chart(fig_homo, use_container_width=True)`: Displays the int\fractive residuals vs. predicted values plot.
-        *   **Independence of Residuals (Residuals vs. Independent Variables)**:
-            *   `st.subheader("4. Independence of Residuals Check: Residuals vs. Independent Variables")`
-            *   `st.markdown(...)`: Explanation of residual independence.
-            *   `st.plotly_chart(fig_indep, use_container_width=True)`: Displays the int\fractive grid of residuals vs. individual independent variables plots.
-        *   **Normality of Residuals (Histogram and Q-Q Plot)**:
-            *   `st.subheader("5. Normality of Residuals Check: Histogram and Q-Q Plot")`
-            *   `st.markdown(...)`: Explanation of residual normality.
-            *   `st.columns(2)`: Divides the section into two columns for side-by-side display of the histogram and Q-Q plot.
-            *   `st.plotly_chart(fig_hist, use_container_width=True)`: Displays the histogram of residuals.
-            *   `st.plotly_chart(plotly_qq, use_container_width=True)`: Displays the Q-Q plot of residuals.
+-   **Dataset Information**:
+    *   `st.header("1. Dataset Overview")`
+    *   `st.write("Selected Dataset Details:")`
+    *   `st.dataframe(df.head())` (display first few rows of the chosen dataset).
+    *   `st.write(f"Dataset Shape: {df.shape[0]} rows, {df.shape[1]} columns")`
 
-This structured approach ensures that the application is functional, educational, and user-friendly, directly addressing the specified requirements for a Streamlit application focused on multiple linear regression assumptions.
+-   **Multiple Linear Regression Model**:
+    *   `st.header("2. Multiple Linear Regression Model")`
+    *   `st.markdown("The multiple linear regression model is expressed as:")`
+    *   `st.latex("Y = \eta_0 + \eta_1 X_1 + \eta_2 X_2 + \\ldots + \eta_p X_p + \epsilon")` (using `st.latex` for display equations).
+    *   `st.markdown("Where: ...")` (variable descriptions).
+    *   `st.subheader("Model Summary")`
+    *   Display `statsmodels` OLS summary table using `st.write(model_summary.summary().as_html(), unsafe_allow_html=True)` for detailed statistical output.
 
+-   **Assumption Analysis Section**: This section will be divided into sub-sections for each assumption, with relevant plots and test results.
+    *   `st.header("3. Assumption Analysis and Diagnostics")`
+
+    *   **3.1. Linearity**
+        *   `st.subheader("3.1. Linearity Assumption")`
+        *   `st.markdown("The relationship between independent and dependent variables should be linear. Check Residuals vs. Predicted plot for patterns.")`
+        *   `st.subheader("Residuals vs. Predicted Value of Dependent Variable")`
+        *   `st.pyplot(plot_residuals_vs_predicted(...))`
+        *   `st.markdown("Ideally, residuals should be randomly scattered around zero. Any discernible pattern (e.g., curve, U-shape) indicates a violation.")`
+        *   `st.subheader("Regression Residuals vs. Factors (Independent Variables)")`
+        *   `st.pyplot(plot_residuals_vs_factors(...))`
+        *   `st.markdown("Similarly, check individual plots of residuals against each independent variable for any non-linear trends.")`
+
+    *   **3.2. Independence of Residuals (No Autocorrelation)**
+        *   `st.subheader("3.2. Independence of Residuals Assumption")`
+        *   `st.markdown("Residuals should be independent of each other (no autocorrelation).")`
+        *   `st.write(f"Durbin-Watson Statistic: {durbin_watson_stat:.3f}")`
+        *   `st.markdown("A Durbin-Watson statistic close to 2 indicates no autocorrelation. Values significantly below 2 suggest positive autocorrelation, while values significantly above 2 suggest negative autocorrelation.")`
+
+    *   **3.3. Homoscedasticity (Constant Variance of Residuals)**
+        *   `st.subheader("3.3. Homoscedasticity Assumption")`
+        *   `st.markdown("The variance of residuals should be constant across all levels of independent variables. Look for a 'fan' or 'cone' shape in the Residuals vs. Predicted plot.")`
+        *   *(Re-display or reference the "Residuals vs. Predicted Value" plot if needed, or provide direct interpretation for it here)*
+        *   `st.subheader("Breusch-Pagan Test for Homoscedasticity")`
+        *   `st.write(f"Lagrange Multiplier Statistic: {lm_stat:.3f}, P-value: {bp_p_value:.3f}")`
+        *   `st.markdown("A small p-value (e.g., < 0.05) from the Breusch-Pagan test suggests that heteroscedasticity is present.")`
+
+    *   **3.4. Normality of Residuals**
+        *   `st.subheader("3.4. Normality of Residuals Assumption")`
+        *   `st.markdown("Residuals should follow a normal distribution.")`
+        *   `st.subheader("Histogram of Residuals")`
+        *   `st.pyplot(plot_residuals_histogram(...))`
+        *   `st.markdown("A bell-shaped histogram centered around zero suggests normality.")`
+        *   `st.subheader("Normal Q-Q Plot of Residuals")`
+        *   `st.pyplot(plot_qq_plot(...))`
+        *   `st.markdown("Points falling close to the 45-degree line indicate normality. Deviations from the line, especially at the tails, suggest non-normality.")`
+        *   `st.subheader("Shapiro-Wilk Test for Normality")`
+        *   `st.write(f"Shapiro-Wilk W-statistic: {shapiro_w_stat:.3f}, P-value: {shapiro_p_value:.3f}")`
+        *   `st.markdown("A small p-value (e.g., < 0.05) from the Shapiro-Wilk test suggests that residuals are not normally distributed.")`
+
+    *   **3.5. No Multicollinearity**
+        *   `st.subheader("3.5. No Multicollinearity Assumption")`
+        *   `st.markdown("Independent variables should not be highly correlated with each other.")`
+        *   `st.subheader("Scatterplot Matrix of Returns and Factors")`
+        *   `st.pyplot(plot_scatterplot_matrix(...))` (using `st.pyplot` if seaborn figure is returned).
+        *   `st.markdown("Visually inspect scatterplots between independent variables for strong linear relationships.")`
+        *   `st.subheader("Variance Inflation Factor (VIF) Scores")`
+        *   `st.dataframe(vif_df)` (display a DataFrame of VIF scores for each independent variable).
+        *   `st.markdown("VIF values generally exceeding 5 or 10 indicate problematic levels of multicollinearity.")`
+
+**Note on Images**: The provided document "Financial Statement Analysis" contains no images or graphs related to multiple linear regression assumptions. Therefore, no such images can be ex\fracted or directly referenced for this application's technical specifications. The application will dynamically generate the required diagnostic plots based on the selected dataset and regression model.
+```
 
 ### Appendix Code
 
-```code
-Revenue recognition calculation (Reference: Page 12, Part 2, Example 8):
 ```
-$600,000 (60% × $1 million) in revenue for the first year.
+12 Months Ended December 31
+2017       2016       2015
+Revenue                                   $56,444    $45,517    $43,604
+Cost of sales                             (21,386)   (17,803)   (17,137)
+Gross profit                              35,058     27,715     26,467
+Distribution expenses                     (5,876)    (4,543)    (4,259)
+Sales and marketing expenses              (8,382)    (7,745)    (6,913)
+Administrative expenses                   (3,841)    (2,883)    (2,560)
+Other operating income/(expenses)         854        732        1,032
+Restructuring                             (468)      (323)      (171)
+Business and asset disposal               (39)       377        524
+Acquisition costs business combinations   (155)      (448)      (55)
+Impairment of assets                      —          —          (82)
+Judicial settlement                       —          —          (80)
+Profit from operations                    17,152     12,882     13,904
+Finance cost                              (6,885)    (9,216)    (3,142)
+Finance income                            378        652        1,689
+Net finance income/(cost)                 (6,507)    (8,564)    (1,453)
+Share of result of associates and joint ventures 430        16         10
+Profit before tax                         11,076     4,334      12,461
+Income tax expense                        (1,920)    (1,613)    (2,594)
+Profit from continuing operations         9,155      2,721      9,867
+Profit from discontinued operations       28         48         —
+Profit of the year                        9,183      2,769      9,867
+Profit from continuing operations attributable to:
+Equity holders of AB InBev                7,968      1,193      8,273
+Non-controlling interest                  1,187      1,528      1,594
+Profit of the year attributable to:
+Equity holders of AB InBev                7,996      1,241      8,273
+Non-controlling interest                  $1,187     $1,528     $1,594
 ```
+Reference: Page 3-4, Exhibit 1: Anheuser-Busch InBev SA/NV Consolidated Income Statement (in Millions of US Dollars) [Excerpt]
 
-Net income definition (Reference: Page 6, "The definition of income..."):
 ```
-Net income equals (i) revenue minus expenses in the
-ordinary activities of the business, plus (ii) other income minus other expenses, plus
-(iii) gains minus losses.
+12 Months Ended
+Dec. 31, 2017  Dec. 31, 2016  Dec. 31, 2015
+Sales                                 $13,471.5      $6,597.4       $5,127.4
+Excise taxes                          (2,468.7)      (1,712.4)      (1,559.9)
+Net sales                             11,002.8       4,885.0        3,567.5
+Cost of goods sold                    (6,217.2)      (2,987.5)      (2,131.6)
+Gross profit                          4,785.6        1,897.5        1,435.9
+Marketing, general and administrative expenses (3,032.4)      (1,589.8)      (1,038.3)
+Special items, net                    (28.1)         2,522.4        (346.7)
+Equity Income in MillerCoors          0              500.9          516.3
+Operating income (loss)               1,725.1        3,331.0        567.2
+Other income (expense), net
 ```
+Reference: Page 4, Exhibit 2: Molson Coors Brewing Company Consolidated Statement of Operations (in Millions of US Dollars) [Excerpt]
 
-Inventory Purchases data (Reference: Page 15, Example 1):
+```
+Year Ended 31 December
+2016       2017
+Sales                                 21,944     24,677
+Cost of goods sold                    (10,744)   (12,459)
+Selling expense                       (5,562)    (5,890)
+General and administrative expense    (2,004)    (2,225)
+Research and development expense      (333)      (342)
+Other income (expense)                (278)      (219)
+Recurring operating income            3,022      3,543
+Other operating income (expense)      (99)       192
+Operating income                      2,923      3,734
+Interest income on cash equivalents and 130        151
+short-term investments
+Interest expense                      (276)      (414)
+Cost of net debt                      (146)      (263)
+Other financial income                67         137
+Other financial expense               (214)      (312)
+Income before tax                     2,630      3,296
+Income tax expense                    (804)      (842)
+Net income from fully consolidated companies 1,826      2,454
+Share of profit of associates         1          109
+Net income                            1,827      2,563
+Net income – Group share              1,720      2,453
+Net income - Non-controlling interests 107        110
+```
+Reference: Page 5, Exhibit 3: Groupe Danone Consolidated Income Statement (in Millions of Euros) [Excerpt]
+
+```
+Fiscal Year Ended
+Dec. 30, 2017  Dec. 31, 2016  Jan. 02, 2016
+Revenues                                $370,075       $324,779       $303,559
+Costs of services (exclusive of depreciation and amortization) 258,829        227,380        207,650
+Selling, general and administrative expenses           86,537         70,584         72,439
+Depreciation and amortization           8,945          7,896          6,552
+GNU goodwill impairment                 —              —              4,524
+Income from operations                  15,764         18,919         12,394
+```
+Reference: Page 8, Exhibit 4: CRA International Inc. Consolidated Statements of Operations (Excerpt) (in Thousands of Dollars)
+
+```
+The standard states that for performance obligations satisfied over time (e.g.,
+where there is a long-term con\fract), revenue is recognized over time by mea-
+suring progress toward satisfying the obligation. In this case, the Builder has
+incurred 60% of the total expected costs ($420,000/$700,000) and will thus
+recognize $600,000 (60% × $1 million) in revenue for the first year.
+```
+Reference: Page 12, Example 5, Part 2 (ref. Example 8)
+
+```
+The standard addresses so-called “variable consideration" as part of deter-
+mining the transaction price. A company is only allowed to recognize variable
+consideration if it can conclude that it will not have to reverse the cumulative
+revenue in the future. In this case, Builder Co. does not recognize any of the
+bonus in year one because it cannot reach the non-reversible conclusion given
+its limited experience with similar con\fracts and potential delays from factors
+outside its control.
+```
+Reference: Page 12, Example 5, Part 3 (ref. Example 8)
+
+```
+Builder's total
+revenue on the transaction (transaction price) is now $1.35 million ($1 million
+original plus the $150,000 new consideration plus $200,000 for the completion
+bonus). Builder Co's progress toward completion is now 51.2% ($420,000 costs
+incurred divided by total expected costs of $820,000). Based on the changes
+in the con\fract, the amount of additional revenue to be recognized is $91,200,
+calculated as (51.2% × $1.35 million) minus the $600,000 already recognized. The
+additional $91,200 of revenue would be recognized as a “cumulative catch-up
+adjustment" on the date of the con\fract modification.
+```
+Reference: Page 12-13, Example 5, Part 4 (ref. Example 8)
+
+```
+In this example, the Company is an Agent because it isn't primarily responsible
+for fulfilling the con\fract, doesn't take any inventory risk or credit risk, doesn't
+have discretion in setting the price, and receives compensation in the form of a
+commission. Because the Company is acting as an Agent, it should report only
+the amount of commission as its revenue.
+```
+Reference: Page 13, Example 5, Part 5 (ref. Example 45)
+
 ```
 Inventory Purchases
-First quarter       2,000 units at $40 per unit
-Second quarter      1,500 units at $41 per unit
-Third quarter       2,200 units at $43 per unit
-Fourth quarter      1,900 units at $45 per unit
-Total               7,600 units at a total cost of $321,600
+First quarter     2,000 units at $40 per unit
+Second quarter    1,500 units at $41 per unit
+Third quarter     2,200 units at $43 per unit
+Fourth quarter    1,900 units at $45 per unit
+Total             7,600 units at a total cost of $321,600
 ```
+Reference: Page 15, Example 1
 
-Cost of Goods Sold and Remaining Inventory (Reference: Page 15, Example 1):
 ```
+The revenue for 2018 would be $280,000 (5,600 units × $50 per unit). Initial-
+ly, the total cost of the goods purchased would be recorded as inventory (an
+asset) in the amount of $321,600. During 2018, the cost of the 5,600 units
+sold would be expensed (matched against the revenue) while the cost of the
+2,000 remaining unsold units would remain in inventory as follows:
+
 Cost of Goods Sold
-From the first quarter       2,000 units at $40 per unit = $80,000
-From the second quarter      1,500 units at $41 per unit = $61,500
-From the third quarter       2,100 units at $43 per unit = $90,300
-Total cost of goods sold                                 $231,800
+From the first quarter     2,000 units at $40 per unit =  $80,000
+From the second quarter    1,500 units at $41 per unit =  $61,500
+From the third quarter     2,100 units at $43 per unit =  $90,300
+Total cost of goods sold                              $231,800
 
 Cost of Goods Remaining in Inventory
-From the third quarter       100 units at $43 per unit = $4,300
-From the fourth quarter      1,900 units at $45 per unit = $85,500
-Total remaining (or ending) inventory cost               $89,800
+From the third quarter     100 units at $43 per unit =   $4,300
+From the fourth quarter    1,900 units at $45 per unit =  $85,500
+Total remaining (or ending) inventory cost            $89,800
 ```
+Reference: Page 15, Example 1 Solution
 
-Cost Reconciliation and Gross Profit (Reference: Page 16, following Example 1):
 ```
-To confirm that total costs are accounted for: $231,800 + $89,800 = $321,600.
-The cost of the goods sold would be expensed against the revenue of $280,000 as follows:
-Revenue           $280,000
-Cost of goods sold 231,800
-Gross profit       $48,200
-```
+To confirm that total costs are accounted for: $231,800 + $89,800 =
+$321,600. The cost of the goods sold would be expensed against the revenue
+of $280,000 as follows:
 
-Weighted Average Cost per Unit (Reference: Page 16, Example 2):
+Revenue              $280,000
+Cost of goods sold    231,800
+Gross profit          $48,200
+```
+Reference: Page 16, Example 1 (continued solution)
+
 ```
 For KDL, the weighted average cost per unit would be
 $321,600/7,600 units = $42.3158 per unit
-```
-
-Cost of Goods Sold using Weighted Average Cost Method (Reference: Page 16, Example 2):
-```
 Cost of goods sold using the weighted average cost method would be
 5,600 units at $42.3158 = $236,968
-```
-
-Ending Inventory using Weighted Average Cost Method (Reference: Page 17, Example 2):
-```
 Ending inventory using the weighted average cost method would be
 2,000 units at $42.3158 = $84,632
-```
-
-LIFO Inventory and Cost of Goods Sold (Reference: Page 17, Example 2):
-```
+...
 Ending inventory 2,000 units at $40 per unit = $80,000
-The remaining costs would be allocated to cost of goods sold under LIFO:
+...
 Total costs of $321,600 less $80,000 remaining in ending inventory = $241,600
-Alternatively, the cost of the last 5,600 units purchased is allocated to cost of goods sold under LIFO:
-1,900 units at $45 per unit + 2,200 units at $43 per unit + 1,500 units at $41 per unit = $241,600
+Alternatively, the cost of the last 5,600 units purchased is allocated to cost of
+goods sold under LIFO:
+1,900 units at $45 per unit + 2,200 units at $43 per unit + 1,500 units at $41 per
+unit
+= $241,600
 ```
+Reference: Page 16-17, Example 2
 
-Straight-Line Depreciation Formula (Reference: Page 20, Example 3):
 ```
+Method            Description                                             Cost of Goods Sold When Prices Are Rising, Relative to Other Two Methods    Ending Inventory When Prices Are Rising, Relative to Other Two Methods
+FIFO (first in, first out) Costs of the earliest items pur-                     Lowest                                                       Highest
+                          chased flow to cost of goods sold
+                          first
+LIFO (last in, first out) Costs of the most recent items                      Highest*                                                     Lowest*
+                          purchased flow to cost of goods
+                          sold first
+Weighted average cost     Averages total costs over total                     Middle                                                       Middle
+                          units available
+```
+Reference: Page 17-18, Exhibit 6: Summary Table on Inventory Costing Methods
+
+```
+Using the straight-line method of depreciation, annual depreciation expense is
+calculated as:
 Cost - Residual value
 Estimated useful life
+Assume the cost of an asset is $10,000. If, for example, the residual value of
+the asset is estimated to be $0 and its useful life is estimated to be 5 years, the
+annual depreciation expense under the straight-line method would be ($10,000
+$0)/5 years = $2,000. In contrast, holding the estimated useful life of the asset
+constant at 5 years but increasing the estimated residual value of the asset to
+$4,000 would result in annual depreciation expense of only $1,200 [calculated as
+($10,000 – $4,000)/5 years]. Alternatively, holding the estimated residual value
+at $0 but increasing the estimated useful life of the asset to 10 years would result
+in annual depreciation expense of only $1,000 [calculated as ($10,000 – $0)/10
+years].
 ```
+Reference: Page 20, Example 3
 
-Straight-Line Depreciation Calculations (Reference: Page 20, Example 3):
 ```
-($10,000 – $0)/5 years = $2,000.
-($10,000 – $4,000)/5 years = $1,200.
-($10,000 – $0)/10 years = $1,000.
+Estimated
+Useful Life
+(Years)                 Estimated Residual Value
+0       1,000   2,000   3,000   4,000   5,000
+2       5,000   4,500   4,000   3,500   3,000   2,500
+4       2,500   2,250   2,000   1,750   1,500   1,250
+5       2,000   1,800   1,600   1,400   1,200   1,000
+8       1,250   1,125   1,000   875     750     625
+10      1,000   900     800     700     600     500
 ```
+Reference: Page 20-21, Exhibit 7: Annual Depreciation Expense (in Dollars)
 
-Diminishing Balance Depreciation - Year 1 (Reference: Page 21, Example 4):
 ```
-Depreciation expense for the first full year of use of the asset would be 40 percent of $11,000,
-or $4,400.
-```
+At the beginning of the first year, the net book value is $11,000. Depreciation
+expense for the first full year of use of the asset would be 40 percent of $11,000,
+or $4,400. Under this method, the residual value, if any, is generally not used in
+the computation of the depreciation each period (the 40 percent is applied to
+$11,000 rather than to $11,000 minus residual value). However, the company
+will stop taking depreciation when the salvage value is reached.
 
-Diminishing Balance Depreciation - Net Book Value Year 2 (Reference: Page 21, Example 4):
-```
+At the beginning of Year 2, the net book value is measured as
 Asset cost                 $11,000
 Less: Accumulated depreciation (4,400)
 Net book value             $6,600
-```
 
-Diminishing Balance Depreciation - Year 2 (Reference: Page 21, Example 4):
-```
 For the second full year, depreciation expense would be $6,600 × 40 percent, or
-$2,640.
-```
-
-Diminishing Balance Depreciation - Net Book Value Year 3 (Reference: Page 21, Example 4):
-```
+$2,640. At the end of the second year (i.e., beginning of the third year), a total
+of $7,040 ($4,400 + $2,640) of depreciation would have been recorded. So, the
+remaining net book value at the beginning of the third year would be
 Asset cost                 $11,000
 Less: Accumulated depreciation (7,040)
 Net book value             $3,960
-```
 
-Diminishing Balance Depreciation - Year 3 (Reference: Page 22, Example 4):
-```
 For the third full year, depreciation would be $3,960 × 40 percent, or $1,584.
-```
-
-Diminishing Balance Depreciation - Net Book Value Year 4 (Reference: Page 22, Example 4):
-```
+At the end of the third year, a total of $8,624 ($4,400 + $2,640 + $1,584) of
+depreciation would have been recorded. So, the remaining net book value at
+the beginning of the fourth year would be
 Asset cost                 $11,000
 Less: Accumulated depreciation (8,624)
 Net book value             $2,376
-```
 
-Diminishing Balance Depreciation - Year 4 (Reference: Page 22, Example 4):
-```
-For the fourth full year, depreciation would be $2,376 × 40 percent, or $950.
-```
-
-Diminishing Balance Depreciation - Net Book Value Year 5 (Reference: Page 22, Example 4):
-```
+For the fourth full year, depreciation would be $2,376 × 40 percent, or $950. At
+the end of the fourth year, a total of $9,574 ($4,400 + $2,640 + $1,584 + $950)
+of depreciation would have been recorded. So, the remaining net book value at
+the beginning of the fifth year would be
 Asset cost                 $11,000
 Less: Accumulated depreciation (9,574)
 Net book value             $1,426
-```
 
-Diminishing Balance Depreciation - Year 5 and Final Net Book Value (Reference: Page 22, Example 4):
-```
 For the fifth year, if deprecation were determined as in previous years, it would
 amount to $570 ($1,426 × 40 percent). However, this would result in a remain-
 ing net book value of the asset below its estimated residual value of $1,000. So,
@@ -566,115 +575,126 @@ Asset cost                 $11,000
 Less: Accumulated depreciation (10,000)
 Net book value             $1,000
 ```
+Reference: Page 21-22, Example 4: An Illustration of Diminishing Balance Depreciation
 
-Groupe Danone Footnotes Excerpt (Reference: Page 26, Exhibit 8):
 ```
-(in € millions)                               Related income (expense)
-Capital gain on disposal of Stonyfield               628
-Compensation received following the decision of the Singapore arbi-
-tration court in the Fonterra case                   105
-Territorial risks, mainly in certain countries in the ALMA region   (148)
-Costs associated with the integration of WhiteWave        (118)
-Impairment of several intangible assets in Waters and Specialized
-Nutrition Reporting entities                         (115)
+(in € millions)                           Related income
+                                           (expense)
+Capital gain on disposal of Stonyfield           628
+Compensation received following the decision of the Singapore arbi- 105
+tration court in the Fonterra case
+Territorial risks, mainly in certain countries in the ALMA region  (148)
+Costs associated with the integration of WhiteWave                 (118)
+Impairment of several intangible assets in Waters and Specialized  (115)
+Nutrition Reporting entities
 Remainder of table omitted
 ```
+Reference: Page 26, Exhibit 8: Highlighting Infrequent Nature of Items—Excerpt from Groupe Danone footnotes to its 2017 financial statements
 
-Microsoft Corporation Income Statement Adjustment (Reference: Page 27, Example 5):
 ```
-(In $ millions, except per share   As           New
-amounts)                       Previously   Revenue
-                                   Reported     Standard     As
-                                                Adjustment   Restated
-
+(In $ millions, except per share
+amounts)               As Previously  New Revenue  As Restated
+                       Reported       Standard
+                                      Adjustment
 Income Statements
 Year Ended June 30, 2017
-Revenue                        89,950       6,621        96,571
-Provision for income taxes     1,945        2,467        4,412
-Net income                     21,204       4,285        25,489
-Diluted earnings per share     2.71         0.54         3.25
+Revenue                89,950         6,621        96,571
+Provision for income taxes 1,945          2,467        4,412
+Net income             21,204         4,285        25,489
+Diluted earnings per share 2.71           0.54         3.25
 
 Year Ended June 30, 2016
-Revenue                        85,320       5,834        91,154
-Provision for income taxes     2,953        2,147        5,100
-Net income                     16,798       3,741        20,539
-Diluted earnings per share     2.1          0.46         2.56
+Revenue                85,320         5,834        91,154
+Provision for income taxes 2,953          2,147        5,100
+Net income             16,798         3,741        20,539
+Diluted earnings per share 2.1            0.46         2.56
 ```
+Reference: Page 27, Example 5: Microsoft Corporation Excerpt from Footnotes to the Financial Statements
 
-Microsoft Revenue and Profit Margin Analysis (Reference: Page 28, Example 5 Solution):
 ```
-The net profit margin is 26.4% (= 25,489/96,571) under the new standard versus 23.6% (=
+Solution:
+Microsoft's results appear better under the new revenue recognition stan-
+dard. Revenues and income are higher under the new standard. The net
+profit margin is higher under the new standard. For 2017, the net profit
+margin is 26.4% (= 25,489/96,571) under the new standard versus 23.6% (=
 21,204/89,950) under the old standard. Reported revenue grew faster under
 the new standard. Revenue growth under the new standard was 5.9% [=
 (96,571/91,154) – 1] compared to 5.4% [= (89,950/85,320) – 1)] under the
 old standard.
+Microsoft's presentation of the effects of the new revenue recognition
+enables an analyst to identify the impact of the change in accounting stan-
+dards.
 ```
+Reference: Page 28, Example 5 Solution (continued)
 
-Basic EPS Formula (Reference: Page 31, "Basic EPS" section):
-```
-Basic EPS = Net income - Preferred dividends
-            -------------------------------------
-            Weighted average number of shares outstanding
-```
-
-AB InBev's Earnings Per Share (Reference: Page 31, Exhibit 10):
 ```
 12 Months Ended December 31
 2017       2016       2015
-
-Basic earnings per share                   $4.06      $0.72      $5.05
-Diluted earnings per share                 3.98       0.71       4.96
-Basic earnings per share from continuing
-operations                                 4.04       0.69       5.05
-Diluted earnings per share from continuing
-operations                                 $3.96      $0.68      $4.96
+Basic earnings per share                  $4.06      $0.72      $5.05
+Diluted earnings per share                3.98       0.71       4.96
+Basic earnings per share from continuing  4.04       0.69       5.05
+operations
+Diluted earnings per share from continuing $3.96      $0.68      $4.96
+operations
 ```
+Reference: Page 31, Exhibit 10: AB InBev's Earnings Per Share
 
-Basic EPS Calculation (Reference: Page 32, Example 6):
 ```
+Basic EPS = Net income - Preferred dividends
+            -----------------------------------
+            Weighted average number of shares outstanding
+```
+Reference: Page 31, Basic EPS Formula
+
+```
+Solution:
 Shopalot's basic EPS is $1.30 ($1,950,000 divided by 1,500,000 shares).
 ```
+Reference: Page 32, Example 6 Solution
 
-Angler Products Common Stock Share Information (Reference: Page 32, Example 7):
 ```
-Shares outstanding on 1 January 2018           1,000,000
-Shares issued on 1 April 2018                  200,000
+Shares outstanding on 1 January 2018      1,000,000
+Shares issued on 1 April 2018             200,000
 Shares repurchased (treasury shares) on 1 October 2018 (100,000)
-Shares outstanding on 31 December 2018         1,100,000
-```
+Shares outstanding on 31 December 2018    1,100,000
 
-Angler Products Weighted Average Number of Shares Outstanding (Reference: Page 32, Example 7):
+Solution to 1:
+The weighted average number of shares outstanding is determined by the
+length of time each quantity of shares was outstanding:
+1,000,000 x (3 months/12 months) =        250,000
+1,200,000 × (6 months/12 months) =        600,000
+1,100,000 x (3 months/12 months) =        275,000
+Weighted average number of shares outstanding 1,125,000
 ```
-1,000,000 x (3 months/12 months) = 250,000
-1,200,000 × (6 months/12 months) = 600,000
-1,100,000 x (3 months/12 months) = 275,000
-Weighted average number of shares outstanding   1,125,000
-```
+Reference: Page 32, Example 7 and Solution to 1
 
-Angler Products Basic EPS (Reference: Page 33, Example 7):
 ```
+Solution to 2:
 Basic EPS = (Net income – Preferred dividends)/Weighted average number
 of shares = ($2,500,000 – $200,000)/1,125,000 = $2.04
 ```
+Reference: Page 33, Example 7 Solution to 2
 
-Angler Products Basic EPS with Stock Split (Reference: Page 33, Example 8):
 ```
-The weighted average number of shares would,
+Solution:
+For EPS calculation purposes, a stock split is treated as if it occurred at the
+beginning of the period. The weighted average number of shares would,
 therefore, be 2,250,000, and the basic EPS would be $1.02 [= ($2,500,000 –
 $200,000)/2,250,000].
 ```
+Reference: Page 33, Example 8 Solution
 
-Diluted EPS Formula - Preferred Stock (Reference: Page 34, Formula 2):
 ```
 Diluted EPS = (Net income)
-              ------------------------------------------
+              -----------------------------------
               (Weighted average number of shares
               outstanding + New common shares that
               would have been issued at conversion)
 ```
+Reference: Page 34, Diluted EPS Formula (2)
 
-Bright-Warm Utility Company Diluted EPS Calculation (Reference: Page 34, Example 9):
 ```
+Solution:
 If the 20,000 shares of convertible preferred had each converted into 5
 shares of the company's common stock, the company would have had an
 additional 100,000 shares of common stock (5 shares of common for each of
@@ -683,67 +703,63 @@ pany would not have paid preferred dividends of $200,000 ($10 per share for
 each of the 20,000 shares of preferred). As shown in Exhibit 11, the compa-
 ny's basic EPS was $3.10 and its diluted EPS was $2.92.
 ```
+Reference: Page 34, Example 9 Solution
 
-Bright-Warm Utility Company Diluted EPS Table (Reference: Page 34, Exhibit 11):
 ```
-Basic EPS    Diluted EPS Using
-             If-Converted Method
+                          Basic EPS   Diluted EPS Using
+                                      If-Converted Method
+Net income                $1,750,000  $1,750,000
+Preferred dividend        -200,000    0
+Numerator                 $1,550,000  $1,750,000
+Weighted average number of shares 500,000   500,000
+outstanding
+Additional shares issued if preferred 0         100,000
+Denominator               500,000     600,000
+EPS                       $3.10       $2.92
+```
+Reference: Page 34-35, Exhibit 11: Calculation of Diluted EPS for Bright-Warm Utility Company Using the If-Converted Method: Case of Preferred Stock
 
-Net income             $1,750,000   $1,750,000
-Preferred dividend     -200,000     0
-Numerator              $1,550,000   $1,750,000
-Weighted average number of shares
-outstanding            500,000      500,000
-Additional shares issued if preferred
-converted              0            100,000
-```
-
-Bright-Warm Utility Company Diluted EPS Table Continued (Reference: Page 35, Exhibit 11):
-```
-Denominator            500,000      600,000
-EPS                    $3.10        $2.92
-```
-
-Diluted EPS Formula - Convertible Debt (Reference: Page 35, Formula 3):
 ```
 Diluted EPS = (Net income + After-tax interest on
-               convertible debt - Preferred dividends)
-               -------------------------------------
-               (Weighted average number of shares
-               outstanding + Additional common
-               shares that would have been
-               issued at conversion)
+              convertible debt - Preferred dividends)
+              -------------------------------------
+              (Weighted average number of shares
+              outstanding + Additional common
+              shares that would have been
+              issued at conversion)
 ```
+Reference: Page 35, Diluted EPS Formula (3)
 
-Oppnox Company Diluted EPS Calculation (Reference: Page 35, Example 10):
 ```
+Solution:
 If the debt securities had been converted, the debt securities would no
 longer be outstanding and instead, an additional 10,000 shares of common
 stock would be outstanding. Also, if the debt securities had been converted,
 the company would not have paid interest of $3,000 on the convertible debt,
 so net income available to common shareholders would have increased by
-$2,100 [= $3,000(1 – 0.30)] on an after-tax basis.
+$2,100 [= $3,000(1 – 0.30)] on an after-tax basis. Exhibit 12 illustrates the
+calculation of diluted EPS using the if-converted method for convertible
+debt.
 ```
+Reference: Page 35, Example 10 Solution
 
-Oppnox Company Diluted EPS Table (Reference: Page 36, Exhibit 12):
 ```
-Basic EPS    Diluted EPS Using
-             If-Converted Method
-
-Net income             $750,000     $750,000
-After-tax cost of interest           2,100
-Numerator              $750,000     $752,100
-Weighted average number of shares
-outstanding            690,000      690,000
-If converted           0            10,000
-Denominator            690,000      700,000
-EPS                    $1.09        $1.07
+                          Basic EPS   Diluted EPS Using
+                                      If-Converted Method
+Net income                $750,000    $750,000
+After-tax cost of interest  —         2,100
+Numerator                 $750,000    $752,100
+Weighted average number of shares 690,000   690,000
+outstanding
+If converted              0           10,000
+Denominator               690,000     700,000
+EPS                       $1.09       $1.07
 ```
+Reference: Page 36, Exhibit 12: Calculation of Diluted EPS for Oppnox Company Using the If-Converted Method: Case of a Convertible Bond
 
-Diluted EPS Formula - Options (Reference: Page 37, Formula 4):
 ```
 Diluted EPS = (Net income - Preferred dividends)
-              --------------------------------------------------------------
+              ---------------------------------------
               [Weighted average number of shares
               outstanding + (New shares that would
               have been issued at option exercise-
@@ -752,9 +768,10 @@ Diluted EPS = (Net income - Preferred dividends)
               (Proportion of year during which the
               financial instruments were outstanding)]
 ```
+Reference: Page 37, Diluted EPS Formula (4)
 
-Hihotech Company Diluted EPS Calculation (Reference: Page 37, Example 11):
 ```
+Solution:
 Using the treasury stock method, we first calculate that the company would
 have received $1,050,000 ($35 for each of the 30,000 options exercised) if all
 the options had been exercised. The options would no longer be outstand-
@@ -768,24 +785,23 @@ the diluted EPS calculation, no change is made to the numerator. As shown
 in Exhibit 13, the company's basic EPS was $2.88 and the diluted EPS was
 $2.84.
 ```
+Reference: Page 37, Example 11 Solution
 
-Hihotech Company Diluted EPS Table (Reference: Page 38, Exhibit 13):
 ```
-Basic EPS    Diluted EPS Using
-             Treasury Stock
-             Method
+                          Basic EPS   Diluted EPS Using
+                                      Treasury Stock Method
+Net income                $2,300,000  $2,300,000
+Numerator                 $2,300,000  $2,300,000
+Weighted average number of shares 800,000   800,000
+outstanding
+If converted              0           10,909
+Denominator               800,000     810,909
+EPS                       $2.88       $2.84
+```
+Reference: Page 38, Exhibit 13: Calculation of Diluted EPS for Hihotech Company Using the Treasury Stock Method: Case of Stock Options
 
-Net income             $2,300,000   $2,300,000
-Numerator              $2,300,000   $2,300,000
-Weighted average number of shares
-outstanding            800,000      800,000
-If converted           0            10,909
-Denominator            800,000      810,909
-EPS                    $2.88        $2.84
 ```
-
-Hihotech Company Diluted EPS under IFRS (Reference: Page 38, Example 12):
-```
+Solution:
 If the options had been exercised, the company would have received
 $1,050,000. If this amount had been received from the issuance of new
 shares at the average market price of $55 per share, the company would have
@@ -797,9 +813,10 @@ shares outstanding of 800,000 to get diluted shares of 810,909. Note that this
 is the same result as that obtained under US GAAP; it is just derived in a
 different manner.
 ```
+Reference: Page 38, Example 12 Solution
 
-Antidilutive Security Calculation (Reference: Page 39, Example 13):
 ```
+Solution:
 If the 20,000 shares of convertible preferred had each converted into 3
 shares of the company's common stock, the company would have had an ad-
 ditional 60,000 shares of common stock (3 shares of common for each of the
@@ -811,244 +828,331 @@ than the company's basic EPS of $3.10, the securities are said to be antidilu-
 tive and the effect of their conversion would not be included in diluted EPS.
 Diluted EPS would be the same as basic EPS (i.e., $3.10).
 ```
+Reference: Page 39, Example 13 Solution
 
-Antidilutive Security Table (Reference: Page 39, Exhibit 14):
 ```
-Basic EPS    Diluted EPS Using
-             If-Converted Method
+                          Basic EPS   Diluted EPS Using
+                                      If-Converted Method
+Net income                $1,750,000  $1,750,000
+Preferred dividend        -200,000    0
+Numerator                 $1,550,000  $1,750,000
+Weighted average number of shares 500,000   500,000
+outstanding
+If converted              0           60,000
+Denominator               500,000     560,000
+EPS                       $3.10       $3.13
+                                      -Exceeds basic EPS; security
+                                      is antidilutive and, therefore,
+                                      not included. Reported
+                                      diluted EPS= $3.10.
+```
+Reference: Page 39-40, Exhibit 14: Calculation for an Antidilutive Security
 
-Net income             $1,750,000   $1,750,000
-Preferred dividend     -200,000     0
-Numerator              $1,550,000   $1,750,000
-Weighted average number of shares
-outstanding            500,000      500,000
-If converted           0            60,000
-Denominator            500,000      560,000
 ```
+Panel A: Income Statements for Companies A, B, and C ($)
+                        A             B             C
+Sales                   $10,000,000   $10,000,000   $2,000,000
+Cost of sales           3,000,000     7,500,000     600,000
+Gross profit            7,000,000     2,500,000     1,400,000
+Selling, general, and administrative expenses 1,000,000     1,000,000     200,000
+Research and development 2,000,000   —           400,000
+Advertising             2,000,000   —           400,000
+Operating profit        2,000,000   1,500,000   400,000
 
-Antidilutive Security Table Continued (Reference: Page 40, Exhibit 14):
+Panel B: Common-Size Income Statements for Companies A, B, and C (%)
+                        A     B     C
+Sales                   100%  100%  100%
+Cost of sales           30    75    30
+Gross profit            70    25    70
+Selling, general, and administrative expenses 10    10    10
+Research and development 20    0     20
+Advertising             20    0     20
+Operating profit        20    15    20
 ```
-EPS                    $3.10        $3.13
--Exceeds basic EPS; security
-is antidilutive and, therefore,
-not included. Reported
-diluted EPS= $3.10.
-```
+Reference: Page 41-42, Exhibit 15: Income Statements for Companies A, B, and C
 
-Net Profit Margin Formula (Reference: Page 43, "Net profit margin" section):
+```
+                        Energy Materials Industrials Consumer Consumer Health Care
+                                                   Discretionary Staples
+Number of observations  34     27        69          81        34        59
+Gross Margin            37.7%  33.0%     36.8%       37.6%     43.4%     59.0%
+Operating Margin        6.4%   14.9%     13.5%       11.0%     17.2%     17.4%
+Net Profit Margin       4.9%   9.9%      8.8%        6.0%      10.9%     7.2%
+```
+Reference: Page 42, Exhibit 16: Median Common-Size Income Statement Statistics for the S&P 500 Classified by S&P/MSCI GICS Sector Data for 2017
+
+```
+                        Financials Information Telecommunication Utilities Real Estate
+                                 Technology   Services
+Number of observations  63         64           4                29        29
+Gross Margin            40.5%      62.4%        56.4%            34.3%     39.8%
+Operating Margin        36.5%      21.1%        15.4%            21.7%     30.1%
+Net Profit Margin       18.5%      11.3%        13.1%            10.1%     21.3%
+```
+Reference: Page 43, Financial Ratios by Sector (part of Exhibit 16)
+
 ```
 Net profit margin = Net income
                     -----------
                     Revenue
 ```
+Reference: Page 43, Net Profit Margin Formula
 
-Gross Profit Margin Formula (Reference: Page 43, "Gross profit margin" section):
 ```
 Gross profit margin = Gross profit
                       ------------
                       Revenue
 ```
+Reference: Page 43, Gross Profit Margin Formula
 
-Income Statements for Companies A, B, and C ($) (Reference: Page 41, Exhibit 15, Panel A):
-```
-A            B            C
-
-Sales                       $10,000,000  $10,000,000  $2,000,000
-Cost of sales               3,000,000    7,500,000    600,000
-Gross profit                7,000,000    2,500,000    1,400,000
-Selling, general, and administrative expenses
-                            1,000,000    1,000,000    200,000
-Research and development    2,000,000    —            400,000
-Advertising                 2,000,000    —            400,000
-Operating profit            2,000,000    1,500,000    400,000
-```
-
-Common-Size Income Statements for Companies A, B, and C (%) (Reference: Page 42, Exhibit 15, Panel B):
-```
-A           B           C
-
-Sales                       100%        100%        100%
-Cost of sales               30          75          30
-Gross profit                70          25          70
-Selling, general, and administrative expenses
-                            10          10          10
-Research and development    20          0           20
-Advertising                 20          0           20
-Operating profit            20          15          20
-```
-
-Median Common-Size Income Statement Statistics for the S&P 500 (Reference: Page 42, Exhibit 16):
-```
-Energy    Materials Industrials Consumer    Consumer    Health Care
-                               Discretionary Staples
-Number of observations  34        27        69          81          34          59
-Gross Margin            37.7%     33.0%     36.8%       37.6%       43.4%       59.0%
-Operating Margin        6.4%      14.9%     13.5%       11.0%       17.2%       17.4%
-Net Profit Margin       4.9%      9.9%      8.8%        6.0%        10.9%       7.2%
-```
-
-AB InBev's Margins: Abbreviated Common-Size Income Statement (Reference: Page 44, Exhibit 17):
 ```
 12 Months Ended December 31
-2017                   2016                   2015
-$        %             $        %             $        %
-Revenue                     56,444   100.0        45,517   100.0        43,604   100.0
-Cost of sales             (21,386)   (37.9)     (17,803)   (39.1)     (17,137)   (39.3)
-Gross profit                35,058    62.1        27,715    60.9        26,467    60.7
-Distribution expenses      (5,876)   (10.4)      (4,543)   (10.0)      (4,259)    (9.8)
-Sales and marketing expenses
-                          (8,382)   (14.9)      (7,745)   (17.0)      (6,913)   (15.9)
-Administrative expenses    (3,841)    (6.8)      (2,883)    (6.3)      (2,560)    (5.9)
+                         2017        2016        2015
+                         $       %     $       %     $       %
+Revenue                  56,444  100.0   45,517  100.0   43,604  100.0
+Cost of sales            (21,386) (37.9)  (17,803) (39.1)  (17,137) (39.3)
+Gross profit             35,058  62.1    27,715  60.9    26,467  60.7
+Distribution expenses    (5,876) (10.4)  (4,543) (10.0)  (4,259) (9.8)
+Sales and marketing expenses (8,382) (14.9)  (7,745) (17.0)  (6,913) (15.9)
+Administrative expenses  (3,841) (6.8)   (2,883) (6.3)   (2,560) (5.9)
 Portions omitted
-Profit from operations      17,152    30.4        12,882    28.3        13,904    31.9
-Finance cost               (6,885)   (12.2)      (9,382)   (20.6)      (3,142)    (7.2)
-Finance income                 378     0.7           818     1.8         1,689     3.9
-Net finance income/(cost)  (6,507)   (11.5)      (8,564)   (18.8)      (1,453)    (3.3)
-Share of result of associates and joint
-ventures                       430     0.8            16     0.0            10     0.0
-Profit before tax           11,076    19.6         4,334     9.5        12,461    28.6
-Income tax expense         (1,920)    (3.4)      (1,613)    (3.5)      (2,594)    (5.9)
-Profit from continuing operations
-                             9,155    16.2         2,721     6.0         9,867    22.6
-Profit from discontinued operations
-                                28     0.0            48     0.1          —       —
-Profit of the year           9,183    16.3         2,769     6.1         9,867    22.6
+Profit from operations   17,152  30.4    12,882  28.3    13,904  31.9
+Finance cost             (6,885) (12.2)  (9,382) (20.6)  (3,142) (7.2)
+Finance income           378     0.7     818     1.8     1,689   3.9
+Net finance income/(cost) (6,507) (11.5)  (8,564) (18.8)  (1,453) (3.3)
+Share of result of associates and joint ventures 430     0.8     16      0.0     10      0.0
+Profit before tax        11,076  19.6    4,334   9.5     12,461  28.6
+Income tax expense       (1,920) (3.4)   (1,613) (3.5)   (2,594) (5.9)
+Profit from continuing operations 9,155   16.2    2,721   6.0     9,867   22.6
+Profit from discontinued operations 28      0.0     48      0.1     —       —
+Profit of the year       9,183   16.3    2,769   6.1     9,867   22.6
 ```
+Reference: Page 44, Exhibit 17: AB InBev's Margins: Abbreviated Common-Size Income Statement
 
-Other Comprehensive Income Calculation 1 (Reference: Page 47, Example 14, Solution to 1):
 ```
-€10 million [€227− (€200 + €20 – €3)]
-```
+Solution to 1:
+C is correct. If the company's actual ending shareholders' equity is €227
+million, then €10 million [€227− (€200 + €20 – €3)] has bypassed the net
+income calculation by being classified as other comprehensive income.
 
-Other Comprehensive Income in Analysis - Initial Table (Reference: Page 47, Example 15):
+Solution to 2:
+B is correct. Answers A and C are not correct because they do not specify
+whether such income is reported as part of net income and shown in the
+income statement.
+```
+Reference: Page 47, Example 14 Solutions
+
 ```
 Company A    Company B
-Price                          $35          $30
-EPS                            $1.60        $0.90
-P/E ratio                      21.9x        33.3x
+Price                                $35          $30
+EPS                                  $1.60        $0.90
+P/E ratio                            21.9x        33.3x
 Other comprehensive income (loss) $ million ($16.272)    $(1.757)
-Shares (millions)              22.6         25.1
-```
+Shares (millions)                    22.6         25.1
 
-Other Comprehensive Income in Analysis - Solution Table (Reference: Page 48, Example 15, Solution):
-```
-Company A    Company B
-Price                          $35          $30
-EPS                            $1.60        $0.90
-OCI (loss) $ million           ($16.272)    $(1.757)
-Shares (millions)              22.6         25.1
-OCI (loss) per share           $(0.72)      $(0.07)
+Solution:
+As shown in the following table, part of the explanation for Company A's
+lower P/E ratio may be that its significant losses—accounted for as other
+comprehensive income (OCI)—are not included in the P/E ratio.
+
+Company A Company B
+Price                                $35          $30
+EPS                                  $1.60        $0.90
+OCI (loss) $ million                 ($16.272)    $(1.757)
+Shares (millions)                    22.6         25.1
+OCI (loss) per share                 $(0.72)      $(0.07)
 Comprehensive EPS = EPS + OCI per share $ 0.88       $0.83
-Price/Comprehensive EPS ratio  39.8x        36.1x
+Price/Comprehensive EPS ratio        39.8x        36.1x
 ```
+Reference: Page 48, Example 15 Problem and Solution
 
-Denali Limited Income Statement Information (Reference: Page 51, \fractice Problems, Question 3):
 ```
-Revenue                  $4,000,000
-Cost of goods sold       $3,000,000
-Other operating expenses $500,000
-Interest expense         $100,000
-Tax expense              $120,000
+Revenue                   $4,000,000
+Cost of goods sold        $3,000,000
+Other operating expenses  $500,000
+Interest expense          $100,000
+Tax expense               $120,000
 ```
+Reference: Page 51, Problem 3
 
-Fairplay Sale Information (Reference: Page 51, \fractice Problems, Question 5):
 ```
-Revenue            $1,000,000
+Revenue           $1,000,000
 Returns of goods sold $100,000
-Cash collected     $800,000
+Cash collected    $800,000
 Cost of goods sold $700,000
 ```
+Reference: Page 51, Problem 5
 
-Laurelli Builders Financial Data (Reference: Page 54, \fractice Problems, Question 20):
 ```
-Common shares outstanding, 1 January     2,020,000
+Total sales price of items sold during 2009 on consignment was €2,000,000.
+Total commissions retained by Apex during 2009 for these items was €500,000.
+```
+Reference: Page 52, Problem 6
+
+```
+Purchased 10,000 units of a toy at a cost of £10 per unit in October.
+Purchased 5,000 additional units in November at a cost of £11 per unit.
+Sold 12,000 units at a price of £15 per unit.
+```
+Reference: Page 52, Problem 8 & 9
+
+```
+Cost of $600,000.
+Estimated useful life of 10 years and estimated residual value of $50,000.
+```
+Reference: Page 53, Problem 11 & 12
+
+```
+Net income of $1,000,000.
+1 January 2009: 1,000,000 shares outstanding.
+1 July 2009: issued 100,000 new shares for $20 per share.
+Paid $200,000 in dividends to common shareholders.
+```
+Reference: Page 53, Problem 16
+
+```
+Net income of $200 million.
+Weighted average of 50,000,000 common shares outstanding.
+2,000,000 convertible preferred shares outstanding that paid an annual dividend of $5.
+Each preferred share is convertible into two shares of the common stock.
+```
+Reference: Page 54, Problem 18
+
+```
+Net income of $12 million.
+Weighted average of 2,000,000 common shares outstanding.
+Paid $800,000 in preferred dividends.
+100,000 options outstanding with an average exercise price of $20.
+CWC's market price over the year averaged $25 per share.
+```
+Reference: Page 54, Problem 19
+
+```
+Common shares outstanding, 1 January   2,020,000
 Common shares issued as stock dividend, 1 June 380,000
-Warrants outstanding, 1 January          500,000
-Net income                               $3,350,000
-Preferred stock dividends paid           $430,000
-Common stock dividends paid              $240,000
+Warrants outstanding, 1 January        500,000
+Net income                             $3,350,000
+Preferred stock dividends paid         $430,000
+Common stock dividends paid            $240,000
 ```
+Reference: Page 54, Problem 20
 
-Workhard Financial Statement Data (Reference: Page 55, \fractice Problems, Question 24):
+```
+1,000,000 average shares outstanding during all of 2009.
+10,000 options outstanding with exercise prices of $10 each.
+Average stock price of CSI during 2009 was $15.
+```
+Reference: Page 54, Problem 21
+
 ```
 $ millions
-Beginning shareholders' equity     475
-Ending shareholders' equity        493
+Beginning shareholders' equity         475
+Ending shareholders' equity            493
 Unrealized gain on available-for-sale securities 5
 Unrealized loss on derivatives accounted for as hedges -3
 Foreign currency translation gain on consolidation 2
-Dividends paid                     1
-Net income                         15
+Dividends paid                         1
+Net income                             15
 ```
+Reference: Page 55, Problem 24
 
-FIFO Calculation (Reference: Page 56, Solutions, Question 8):
 ```
-Under the first in, first out (FIFO) method, the first 10,000 units sold
+3. C is correct. Gross margin is revenue minus cost of goods sold. Answer A rep-
+resents net income and B represents operating income.
+```
+Reference: Page 56, Solution 3
+
+```
+5. B is correct. Net revenue is revenue for goods sold during the period less any
+returns and allowances, or $1,000,000 minus $100,000 = $900,000.
+```
+Reference: Page 56, Solution 5
+
+```
+6. A is correct. Apex is not the owner of the goods and should only report its net
+commission as revenue.
+```
+Reference: Page 56, Solution 6
+
+```
+8. B is correct. Under the first in, first out (FIFO) method, the first 10,000 units sold
 came from the October purchases at £10, and the next 2,000 units sold came
 from the November purchases at £11.
 ```
+Reference: Page 56, Solution 8
 
-Weighted Average Cost Method Calculation (Reference: Page 56, Solutions, Question 9):
 ```
-October purchases    10,000 units    $100,000
-November purchases    5,000 units    $55,000
-Total              15,000 units    $155,000
-
+9. C is correct. Under the weighted average cost method:
+October purchases       10,000 units   $100,000
+November purchases      5,000 units    $55,000
+Total                   15,000 units   $155,000
 $155,000/15,000 units = $10.3333
 $10.3333 × 12,000 units = $124,000
 ```
+Reference: Page 56, Solution 9
 
-Straight-Line Depreciation Calculation (Reference: Page 56, Solutions, Question 11):
 ```
-Straight-line depreciation would be ($600,000 – $50,000)/10, or $55,000.
+11. A is correct. Straight-line depreciation would be ($600,000 – $50,000)/10, or
+$55,000.
 ```
+Reference: Page 56, Solution 11
 
-Double-Declining Balance Depreciation Calculation (Reference: Page 56, Solutions, Question 12):
 ```
-Double-declining balance depreciation would be $600,000 × 20 per-
-cent (twice the straight-line rate).
+12. C is correct. Double-declining balance depreciation would be $600,000 × 20 per-
+cent (twice the straight-line rate). The residual value is not sub\fracted from the
+initial book value to calculate depreciation. However, the book value (carrying
+amount) of the asset will not be reduced below the estimated residual value.
 ```
+Reference: Page 56, Solution 12
 
-Basic Earnings Per Share Calculation (Reference: Page 57, Solutions, Question 16):
 ```
-The weighted average number of shares outstanding for 2009 is
+16. C is correct. The weighted average number of shares outstanding for 2009 is
 1,050,000. Basic earnings per share would be $1,000,000 divided by 1,050,000, or
 $0.95.
 ```
+Reference: Page 57, Solution 16
 
-Diluted EPS Calculation (Reference: Page 57, Solutions, Question 18):
 ```
+18. C is correct.
 Diluted EPS = (Net income)/(Weighted average number of shares outstanding +
 New common shares that would have been issued at conversion)
 = $200,000,000/[50,000,000 + (2,000,000 × 2)]
 = $3.70
+The diluted EPS assumes that the preferred dividend is not paid and that the
+shares are converted at the beginning of the period.
 ```
+Reference: Page 57, Solution 18
 
-Diluted EPS Calculation (Reference: Page 57, Solutions, Question 19):
 ```
+19. B is correct. The formula to calculate diluted EPS is as follows:
+Diluted EPS = (Net income – Preferred dividends)/[Weighted average number of
+shares outstanding + (New shares that would have been issued at option exer-
+cise – Shares that could have been purchased with cash received upon exercise) ×
+(Proportion of year during which the financial instruments were outstanding)].
+The underlying assumption is that outstanding options are exercised, and then
+the proceeds from the issuance of new shares are used to repurchase shares
+already outstanding:
 Proceeds from option exercise = 100,000 × $20 = $2,000,000
 Shares repurchased = $2,000,000/$25 = 80,000
 The net increase in shares outstanding is thus 100,000 – 80,000 = 20,000. There-
 fore, the diluted EPS for CWC = ($12,000,000 – $800,000)/2,020,000 = $5.54.
 ```
+Reference: Page 57, Solution 19
 
-Basic EPS Calculation (Reference: Page 57, Solutions, Question 20):
 ```
-LB's basic EPS is $1.22 [= ($3,350,000 – $430,000)/2,400,000].
-```
-
-Treasury Stock Method Calculation (Reference: Page 58, Solutions, Question 21):
-```
-The company would receive $100,000 (10,000 × $10) and would re-
+21. A is correct. With stock options, the treasury stock method must be used. Under
+that method, the company would receive $100,000 (10,000 × $10) and would re-
 purchase 6,667 shares ($100,000/$15). The shares for the denominator would be:
-Shares outstanding    1,000,000
-Options exercises      10,000
-Treasury shares purchased (6,667)
-Denominator          1,003,333
+Shares outstanding        1,000,000
+Options exercises          10,000
+Treasury shares purchased  (6,667)
+Denominator              1,003,333
 ```
+Reference: Page 58, Solution 21
 
-Comprehensive Income Calculation (Reference: Page 58, Solutions, Question 24):
 ```
+24. C is correct. Comprehensive income includes both net income and other com-
+prehensive income.
 Other comprehensive income = Unrealized gain on available-for-sale securities –
 Unrealized loss on derivatives accounted for as hedges + Foreign currency transla-
 tion gain on consolidation
@@ -1062,3 +1166,4 @@ equity) + Dividends
 = $18 million + $1 million = $19 million
 Net income is $15 million so other comprehensive income is $4 million.
 ```
+Reference: Page 58, Solution 24
